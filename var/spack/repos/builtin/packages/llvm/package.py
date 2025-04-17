@@ -1258,6 +1258,10 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
             # The config file is `flang.cfg` even though the executable is `flang-new`.
             # `--gcc-install-dir` / `--gcc-toolchain` support was only added in LLVM 19.
             cfg_files.append("flang.cfg")
+            flang_binary = os.path.exists(os.path.join(self.prefix.bin, "flang"))
+            flang_new_binary = os.path.exists(os.path.join(self.prefix.bin, "flang-new"))
+            if not os.path.exists(flang_binary) and os.path.exists(flang_new_binary):
+                os.link(flang_new_binary, flang_binary)
         gcc_install_dir_flag = get_gcc_install_dir_flag(spec, self.compiler)
         if gcc_install_dir_flag:
             for cfg in cfg_files:
